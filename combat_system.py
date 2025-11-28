@@ -108,6 +108,8 @@ class SimpleBattle:
         while self.combat_active == True:
             display_combat_stats(self.character, self.enemy)
             self.player_turn()
+            if self.combat_active == False: 
+                break
             results['winner'] = self.check_battle_end()
             self.enemy_turn()
             results['winner'] = self.check_battle_end()
@@ -142,9 +144,14 @@ class SimpleBattle:
         if player_choice == "1":
             self.apply_damage(self.enemy, self.calculate_damage(self.character, self.enemy))
         elif player_choice == "2":
-            use_special_ability(self.character, self.enemy)
+            msg = use_special_ability(self.character, self.enemy)
+            display_battle_log(f"{self.character['name']} used " + msg)
         elif player_choice == "3":
-            self.attempt_escape()
+            escaped = self.attempt_escape()
+            if escaped == True:
+                display_battle_log(f"{self.character['name']} successfully escaped")
+            else:
+                display_battle_log(f"{self.character['name']} failed to escape")
     
     def enemy_turn(self):
         """
@@ -243,31 +250,53 @@ def use_special_ability(character, enemy):
     # Check character class
     # Execute appropriate ability
     # Track cooldowns (optional advanced feature)
-    pass
+    char_class = character['class']
+    if char_class == "Warrior":
+        return warrior_power_strike(character, enemy)
+    elif char_class == "Mage":
+        return mage_fireball(character, enemy)
+    elif char_class == "Rogue":
+       return rogue_critical_strike(character, enemy)
+    elif char_class == "Cleric":
+        return cleric_heal(character)
+
 
 def warrior_power_strike(character, enemy):
     """Warrior special ability"""
     # TODO: Implement power strike
     # Double strength damage
-    pass
+    dmg = character['strength'] * 2
+    enemy['health'] -= dmg
+    return f"Power Strike hit for {dmg} damage"
 
 def mage_fireball(character, enemy):
     """Mage special ability"""
     # TODO: Implement fireball
     # Double magic damage
-    pass
+    dmg = character['magic'] * 2
+    enemy['health'] -= dmg
+    return f"Fireball hit for {dmg} damage"
 
 def rogue_critical_strike(character, enemy):
     """Rogue special ability"""
     # TODO: Implement critical strike
     # 50% chance for triple damage
-    pass
+    dmg = character['strength'] * 3
+    chance = random.randint(0,1)
+    if chance == 1:
+        enemy['health'] -= dmg
+        return f"Critical Strike hit for {dmg} damage"
+        
+    return "Critical Strike missed"
 
 def cleric_heal(character):
     """Cleric special ability"""
     # TODO: Implement healing
     # Restore 30 HP (not exceeding max_health)
-    pass
+    character['health'] += 30
+    if character['health'] > character['max_health']:
+        character['health'] = character['max_health']
+    return f"Heal for 30 health"
 
 # ============================================================================
 # COMBAT UTILITIES
@@ -312,7 +341,6 @@ def display_battle_log(message):
     """
     # TODO: Implement battle log display
     print(f">>> {message}")
-    pass
 
 # ============================================================================
 # TESTING

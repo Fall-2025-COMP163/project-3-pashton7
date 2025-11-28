@@ -137,6 +137,7 @@ def use_item(character, item_id, item_data):
             effect = parse_item_effect(item_data['effect'])
             apply_stat_effect(character, effect[0], effect[1])
             remove_item_from_inventory(character, item_id)
+            return effect
         else:
             raise InvalidItemTypeError
     else:
@@ -337,7 +338,7 @@ def parse_item_effect(effect_string):
     # Convert value to integer
     string_split = effect_string.split(":")
     val = int(string_split[-1])
-    return tuple(string_split[0], val)
+    return (string_split[0], val)
 
 def apply_stat_effect(character, stat_name, value):
     """
@@ -373,7 +374,7 @@ def display_inventory(character, item_data_dict):
     print("=== INVENTORY ===")
     for item in inventory:
         item_data = item_data_dict[inventory[item]]
-        print(f'{item_data['name']}')
+        print(f"{item_data['name']}")
         print(f"   Type: {item_data['type']}")
         print(f"   Quantity: {count_item(character, inventory[item])}")
         print()
