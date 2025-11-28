@@ -51,9 +51,10 @@ def create_character(name, character_class):
                 "Rogue": {"name": "", "class": "Rogue", "health": 90, "strength": 12, "magic":10}, "Cleric": {"name": "", "class": "Cleric", "health": 100, "strength": 10, "magic":15}}
     defaults = {"max_health": 0, "level": 1, "experience": 0, "gold": 100, "inventory": [], "active_quests": [], "completed_quests":[]}
     if classes.get(character_class, False):
-        new_class = classes.get(character_class).update(defaults)
-        new_class["max_health"] = new_class["health"]
-        new_class["name"] = name
+        new_class = classes.get(character_class)
+        new_class.update(defaults)
+        new_class['max_health'] = new_class['health']
+        new_class['name'] = name
         return new_class
     else:
         raise InvalidCharacterClassError
@@ -88,11 +89,11 @@ def save_character(character, save_directory="data/save_games"):
     if not os.path.exists(save_directory):
         os.mkdir(save_directory)
 
-    with open(f"{character['name']}_save.txt", "w") as file:
-        save_str = f"NAME: {character['name']}\nCLASS: {character['class']}\nLEVEL: {character['level']}\nHEALTH: {character['health']}\nMAX_HEALTH: {character['max_health']}\nSTRENGTH: {character['strength']}\nMAGIC: {character['magic']}\nEXPERIENCE: {character["experience"]}\nGOLD: {character["gold"]}\nINVENTORY: {character['inventory']}\nACTIVE_QUESTS: {character['active_quests']}\nCOMPLETED_QUESTS: {character['completed_quests']}"
+    with open(f"{save_directory}/{character['name']}_save.txt", "w") as file:
+        save_str = f"NAME: {character['name']}\nCLASS: {character['class']}\nLEVEL: {character['level']}\nHEALTH: {character['health']}\nMAX_HEALTH: {character['max_health']}\nSTRENGTH: {character['strength']}\nMAGIC: {character['magic']}\nEXPERIENCE: {character['experience']}\nGOLD: {character['gold']}\nINVENTORY: {character['inventory']}\nACTIVE_QUESTS: {character['active_quests']}\nCOMPLETED_QUESTS: {character['completed_quests']}"
         file.write(save_str)
 
-    return True
+        return True
 
 def load_character(character_name, save_directory="data/save_games"):
     """
@@ -114,17 +115,21 @@ def load_character(character_name, save_directory="data/save_games"):
     # Validate data format → InvalidSaveDataError
     # Parse comma-separated lists back into Python lists
     path = f"{save_directory}/{character_name}_save.txt"
-    load_dict = {"name": "", "class": "Warrior", "health": 120, "strength": 15, "magic":5, "level": 1, "experience": 0, "gold": 100, "inventory": [], "active_quests": [], "completed_quests":[]}
+    load_dict = {"name": "", "class": "Warrior", "health": 120, "strength": 15, "magic":5, "max_health": 0, "level": 1, "experience": 0, "gold": 100, "inventory": [], "active_quests": [], "completed_quests":[]}
     if os.path.exists(path):
         with open(path, "r") as file:
             data = file.readlines()
             for line in data:
-                line_split = data[line].split(":")
+                
+                line_split = line.split(":")
                 attribute = line_split[0].lower()
                 info = line_split[1].strip()
-                if load_dict.get(attribute):
-                    if type(load_dict[attribute]) is list:
+             
+                if load_dict.get(attribute) != None:
+                    if type(load_dict[attribute]) == []:
                         info = info.split(",")
+                    if info.isnumeric():
+                        info = int(info)
                     load_dict[attribute] = info
                 else:
                     raise InvalidSaveDataError
@@ -301,26 +306,26 @@ if __name__ == "__main__":
     print("=== CHARACTER MANAGER TEST ===")
     
     # Test character creation
-    # try:
-    #     char = create_character("TestHero", "Warrior")
-    #     print(f"Created: {char['name']} the {char['class']}")
-    #     print(f"Stats: HP={char['health']}, STR={char['strength']}, MAG={char['magic']}")
-    # except InvalidCharacterClassError as e:
-    #     print(f"Invalid class: {e}")
+    try:
+         char = create_character("TestHero", "Warrior")
+         print(f"Created: {char['name']} the {char['class']}")
+         print(f"Stats: HP={char['health']}, STR={char['strength']}, MAG={char['magic']}")
+    except InvalidCharacterClassError as e:
+         print(f"Invalid class: {e}")
     
     # Test saving
-    # try:
-    #     save_character(char)
-    #     print("Character saved successfully")
-    # except Exception as e:
-    #     print(f"Save error: {e}")
+    try:
+         save_character(char)
+         print("Character saved successfully")
+    except Exception as e:
+         print(f"Save error: {e}")
     
     # Test loading
-    # try:
-    #     loaded = load_character("TestHero")
-    #     print(f"Loaded: {loaded['name']}")
-    # except CharacterNotFoundError:
-    #     print("Character not found")
-    # except SaveFileCorruptedError:
-    #     print("Save file corrupted")
+    try:
+         loaded = load_character("TestHero")
+         print(f"Loaded: {loaded['name']}")
+    except CharacterNotFoundError:
+         print("Character not found")
+    except SaveFileCorruptedError:
+         print("Save file corrupted")
 
