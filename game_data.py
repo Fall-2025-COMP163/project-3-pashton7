@@ -169,6 +169,8 @@ def parse_quest_block(lines):
         if line == "":
             continue
         line_split = line.split(":")
+        if len(line_split) < 2:
+            raise InvalidDataFormatError
         key = line_split[0].lower()
         val = line_split[1].strip()
         if key == "quest_id":

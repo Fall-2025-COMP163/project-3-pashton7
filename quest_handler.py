@@ -52,7 +52,7 @@ def accept_quest(character, quest_id, quest_data_dict):
     # Check not already completed
     # Check not already active
     # Add to character['active_quests']
-    if quest_data_dict[quest_id]:
+    if quest_id in quest_data_dict:
         if quest_data_dict[quest_id]['required_level'] > character['level']:
             raise InsufficientLevelError
         if can_accept_quest(character, quest_id, quest_data_dict):
@@ -91,7 +91,7 @@ def complete_quest(character, quest_id, quest_data_dict):
     # Add to completed_quests
     # Grant rewards (use character_manager.gain_experience and add_gold)
     # Return reward summary
-    if quest_data_dict.count(quest_id) > 0:
+    if quest_id in quest_data_dict:
         quest = quest_data_dict[quest_id]
         if is_quest_active(character, quest_id):
             character['active_quests'].remove(quest_id)
@@ -226,8 +226,12 @@ def get_quest_prerequisite_chain(quest_id, quest_data_dict):
     # Follow prerequisite links backwards
     # Build list in reverse order
     prerequisites = []
+    if not quest_id in quest_data_dict:
+        raise QuestNotFoundError
     quest_loop = True
     while quest_loop == True:
+        if not quest_id in quest_data_dict:
+            raise QuestRequirementsNotMetError
         prereq = quest_data_dict[quest_id]['prerequisite']
         quest_loop = True if prereq != "NONE" else False
         if quest_loop:
@@ -350,7 +354,7 @@ def validate_quest_prerequisites(quest_data_dict):
         data = quest_data_dict[quest]
         req = data['prerequisite']
         if req != 'NONE':
-            if not quest_data_dict.count(req) > 0:
+            if not req in quest_data_dict:
                 raise QuestNotFoundError
     
     return True

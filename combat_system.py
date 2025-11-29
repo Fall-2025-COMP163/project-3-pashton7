@@ -102,7 +102,7 @@ class SimpleBattle:
         # Award XP and gold if player wins
         if self.character['health'] <= 0:
             raise CharacterDeadError
-        results = {'winner': None, 'xp_gained': int, 'gold_gained': int}
+        results = {'winner': None, 'xp_gained': 0, 'gold_gained': 0}
         
 
         while self.combat_active == True:
@@ -114,9 +114,10 @@ class SimpleBattle:
             self.enemy_turn()
             results['winner'] = self.check_battle_end()
 
-        earned_rewards =  get_victory_rewards(self.enemy)
-        results['gold_gained'] = earned_rewards['gold']
-        results['xp_gained'] = earned_rewards['xp']
+        if results['winner'] == 'player':
+            earned_rewards =  get_victory_rewards(self.enemy)
+            results['gold_gained'] = earned_rewards['gold']
+            results['xp_gained'] = earned_rewards['xp']
         
         return results
 

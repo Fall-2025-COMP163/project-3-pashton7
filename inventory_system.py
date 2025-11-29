@@ -61,7 +61,7 @@ def remove_item_from_inventory(character, item_id):
         character['inventory'].remove(item_id)
         return True
     else:
-        return ItemNotFoundError
+        raise ItemNotFoundError
 
 def has_item(character, item_id):
     """
@@ -179,7 +179,7 @@ def equip_weapon(character, item_id, item_data):
         else:
             raise InvalidItemTypeError
     else:
-        ItemNotFoundError
+        raise ItemNotFoundError
     
 
 def equip_armor(character, item_id, item_data):
@@ -214,7 +214,7 @@ def equip_armor(character, item_id, item_data):
         else:
             raise InvalidItemTypeError
     else:
-        ItemNotFoundError
+        raise ItemNotFoundError
 
 def unequip_weapon(character):
     """
