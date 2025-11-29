@@ -36,9 +36,9 @@ def create_enemy(enemy_type):
     """
     # TODO: Implement enemy creation
     # Return dictionary with: name, health, max_health, strength, magic, xp_reward, gold_reward
-    enemies = {"goblin": {"name": "goblin", "health": 50, "max_health": 50, "strength": 8, "magic":2, "xp_reward": 25, "gold_reward": 10}, "orc": {"name": "orc", "health": 80, "max_health": 80, "strength": 12, "magic":5, "xp_reward": 50, "gold_reward": 25},
-               "dragon": {"name": "dragon", "health": 200, "max_health": 200, "strength": 25, "magic":15, "xp_reward": 200, "gold_reward": 100}}
-    if enemies.get(enemy_type, False):
+    enemies = {"goblin": {"name": "Goblin", "health": 50, "max_health": 50, "strength": 8, "magic":2, "xp_reward": 25, "gold_reward": 10}, "orc": {"name": "Orc", "health": 80, "max_health": 80, "strength": 12, "magic":5, "xp_reward": 50, "gold_reward": 25},
+               "dragon": {"name": "Dragon", "health": 200, "max_health": 200, "strength": 25, "magic":15, "xp_reward": 200, "gold_reward": 100}}
+    if enemies.get(enemy_type.lower(), False):
         new_enemy = enemies.get(enemy_type)
         return new_enemy
     else:

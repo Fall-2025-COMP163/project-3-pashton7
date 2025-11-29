@@ -172,7 +172,7 @@ def equip_weapon(character, item_id, item_data):
     if has_item(character, item_id):
         if item_data['type'] == 'weapon':
             unqequip_id = unequip_weapon(character)
-            character['active_item'] = item_data
+            character['equipped_weapon'] = item_id
             effect2 = parse_item_effect(item_data['effect'])
             apply_stat_effect(character, effect2[0], effect2[1])
             remove_item_from_inventory(character, item_id)
@@ -207,7 +207,7 @@ def equip_armor(character, item_id, item_data):
     if has_item(character, item_id):
         if item_data['type'] == 'armor':
             unqequip_id = unequip_armor(character)
-            character['active_armor'] = item_data
+            character['equipped_armor'] = item_id
             effect2 = parse_item_effect(item_data['effect'])
             apply_stat_effect(character, effect2[0], effect2[1])
             remove_item_from_inventory(character, item_id)
@@ -228,7 +228,7 @@ def unequip_weapon(character):
     # Remove stat bonuses
     # Add weapon back to inventory
     # Clear equipped_weapon from character
-    if character['active_item']:
+    if 'active_item' in character:
         if get_inventory_space_remaining(character) == 0:
             raise InventoryFullError
         item_data = character['active_item']

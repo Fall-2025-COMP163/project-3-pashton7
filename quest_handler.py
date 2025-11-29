@@ -206,7 +206,7 @@ def can_accept_quest(character, quest_id, quest_data_dict):
         req_list = get_quest_prerequisite_chain(quest_id, quest_data_dict)
         if len(req_list) > 0:
             for quest in req_list:
-                if not is_quest_completed(character, req_list[quest]):
+                if is_quest_completed(character, quest) == False:
                     return False
         return True
     else:
